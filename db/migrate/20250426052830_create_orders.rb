@@ -8,6 +8,8 @@ class CreateOrders < ActiveRecord::Migration[8.0]
       t.decimal :shipping_cost
       t.decimal :tax_amount
       t.string :payment_method
+      t.references :shipping_address, foreign_key: { to_table: :addresses }
+      t.references :billing_address, foreign_key: { to_table: :addresses }
 
       t.timestamps
     end
