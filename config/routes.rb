@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   devise_for :users
 
   # Static pages route
-  get "/:slug", to: "static_pages#show", constraints: { slug: /(about|contact)/ }
+  get "/:slug", to: "static_pages#show"
 
   # Home routes
   get "home/index"

@@ -9,6 +9,9 @@ ActiveAdmin.register Category do
       truncate(category.description, length: 100)
     end
     column :created_at
+    column "Products Count" do |category|
+      category.products.count
+    end
     actions
   end
 
@@ -35,17 +38,30 @@ ActiveAdmin.register Category do
     panel "Products in this Category" do
       table_for category.products do
         column :id
-        column :name
+        column :name do |product|
+          link_to product.name, admin_product_path(product)
+        end
         column :sku
         column :stock_quantity
-        column do |product|
-          links = []
-          links << link_to("View", admin_product_path(product))
-          links << link_to("Edit", edit_admin_product_path(product))
-          links.join(" | ").html_safe
+        column "Images" do |product|
+          if product.images.attached?
+            image_tag url_for(product.images.first), style: "height: 50px; width: auto;"
+          else
+            "No image"
+          end
         end
+        column :created_at
       end
     end
-    active_admin_comments
+  end
+
+  controller do
+    def self.ransackable_attributes(auth_object = nil)
+      [ "created_at", "description", "id", "name", "updated_at" ]
+    end
+
+    def self.ransackable_associations(auth_object = nil)
+      [ "products" ]
+    end
   end
 end

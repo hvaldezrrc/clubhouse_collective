@@ -12,7 +12,9 @@ ActiveAdmin.register Product do
     id_column
     column :name
     column :sku
-    column :category
+    column :category do |product|
+      link_to product.category.name, admin_category_path(product.category) if product.category
+    end
     column :stock_quantity
     column "Image" do |product|
       if product.images.attached?
@@ -33,7 +35,9 @@ ActiveAdmin.register Product do
     f.inputs "Product Details" do
       f.input :name
       f.input :description, as: :text
-      f.input :category
+      f.input :category, as: :select, collection: Category.all.map { |c| [ c.name, c.id ] },
+              input_html: { class: "chosen-select" },
+              prompt: "Select a Category"
       f.input :sku
       f.input :stock_quantity
       f.input :images, as: :file, input_html: { multiple: true }
@@ -72,7 +76,9 @@ ActiveAdmin.register Product do
       row :id
       row :name
       row :description
-      row :category
+      row :category do |product|
+        link_to product.category.name, admin_category_path(product.category) if product.category
+      end
       row :sku
       row :stock_quantity
       row :created_at

@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  title: MyString
-  slug: MyString
-  content: MyText
+about_page:
+  title: "About Test Page"
+  slug: "about_test"
+  content: "This is test content for the about page"
 
-two:
-  title: MyString
-  slug: MyString
-  content: MyText
+contact_page:
+  title: "Contact Test Page"
+  slug: "contact_test"
+  content: "This is test content for the contact page"
