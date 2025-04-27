@@ -1,4 +1,14 @@
 ActiveAdmin.register AdminUser do
+  controller do
+    def self.ransackable_attributes(auth_object = nil)
+      AdminUser.ransackable_attributes(auth_object)
+    end
+
+    def self.ransackable_associations(auth_object = nil)
+      AdminUser.ransackable_associations(auth_object)
+    end
+  end
+
   permit_params :email, :password, :password_confirmation
 
   index do
@@ -24,5 +34,4 @@ ActiveAdmin.register AdminUser do
     end
     f.actions
   end
-
 end
