@@ -170,3 +170,22 @@ if Product.count < 10
   end
   puts "#{products_to_create.length} products created!"
 end
+
+# Add static pages
+unless StaticPage.exists?(slug: 'about')
+  StaticPage.create!(
+    title: 'About Clubhouse Collective',
+    slug: 'about',
+    content: 'Clubhouse Collective is an e-commerce store specializing in merging golf and streetwear, offering high-performance golf apparel, stylish and functional accessories, and gear designed for the modern golfer. Founded 3 years ago out of a passion for both the game of golf and the unique culture surrounding it, our focus is on combining traditional golfing essentials with contemporary, street-inspired style.'
+  )
+  puts "About page created!"
+end
+
+unless StaticPage.exists?(slug: 'contact')
+  StaticPage.create!(
+    title: 'Contact Us',
+    slug: 'contact',
+    content: "### We'd love to hear from you!\n\nPhone: (204) 555-1234\n\nEmail: info@clubhousecollective.com\n\n### Hours of Operation\nMonday - Friday: 9am - 5pm EST\nSaturday: 10am - 4pm EST\nSunday: Closed\n\n### Location\nOur products are available exclusively online, but we're always happy to assist you via phone or email."
+  )
+  puts "Contact page created!"
+end
