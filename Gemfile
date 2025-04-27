@@ -71,3 +71,5 @@ gem "sassc-rails", "~> 2.1"
 gem "image_processing", "~> 1.2"
 
 gem "mini_magick", "~> 5.2"
+
+gem "faker", "~> 3.2"

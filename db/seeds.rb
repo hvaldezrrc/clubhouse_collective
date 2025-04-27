@@ -171,6 +171,39 @@ if Product.count < 10
   puts "#{products_to_create.length} products created!"
 end
 
+if Product.count < 100
+  puts "Seeding 100+ random products..."
+
+  categories = Category.all
+
+  100.times do
+    category = categories.sample
+    base_names = {
+      'Golf Apparel' => [ 'Polo Shirt', 'Quarter Zip Pullover', 'Sun Hoodie', 'Rain Jacket', 'Performance Shorts' ],
+      'Golf Accessories' => [ 'Golf Glove', 'Divot Tool', 'Ball Marker', 'Golf Towel', 'Scorecard Holder' ],
+      'Golf Bags' => [ 'Stand Bag', 'Cart Bag', 'Tour Staff Bag', 'Sunday Bag', 'Travel Cover' ],
+      'Golf Shoes' => [ 'Spikeless Shoes', 'Tour Cleats', 'Waterproof Shoes', 'Performance Shoes', 'Casual Golf Shoes' ],
+      'Streetwear' => [ 'Crewneck Sweatshirt', 'Golf Joggers', 'Snapback Hat', 'Bomber Jacket', 'Athletic Shorts' ]
+    }
+
+    base_product_name = base_names[category.name].sample
+    gender_prefix = [ 'Men\'s', 'Women\'s', 'Unisex' ].sample
+    material_prefix = [ 'Performance', 'Lightweight', 'Classic', 'Tour', 'Elite' ].sample
+
+    product_name = "#{gender_prefix} #{material_prefix} #{base_product_name}"
+
+    Product.create!(
+      name: product_name,
+      description: Faker::Lorem.paragraph(sentence_count: 5),
+      sku: Faker::Alphanumeric.alphanumeric(number: 8).upcase,
+      stock_quantity: rand(5..50),
+      category: category
+    )
+  end
+
+  puts "Random products created!"
+end
+
 # Add static pages
 unless StaticPage.exists?(slug: 'about')
   StaticPage.create!(
