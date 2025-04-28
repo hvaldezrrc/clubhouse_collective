@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="hero-section">
+    <h1>Welcome to Clubhouse Collective</h1>
+    <p>Premium Golf Gear & Streetwear for the Modern Golfer</p>
+  </div>
+
+  <div class="category-nav">
+    <ul>
+      <li><%= link_to "All Products", products_path, class: params[:category_id].blank? ? 'active' : '' %></li>
+      <% @categories.each do |category| %>
+        <li>
+          <%= link_to category.name, products_path(category_id: category.id),
+              class: params[:category_id].to_s == category.id.to_s ? 'active' : '' %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+
+  <% if @current_category %>
+    <h2><%= @current_category.name %></h2>
+    <p><%= @current_category.description %></p>
+  <% end %>
+
+  <div class="products-grid">
+    <% @products.each do |product| %>
+      <div class="product-card">
+        <%= link_to product_path(product) do %>
+          <div class="product-image">
+            <% if product.images.attached? %>
+              <img src="<%= rails_blob_path(product.images.first, only_path: true) %>" alt="<%= product.name %>">
+            <% else %>
+              <div class="no-image">No Image</div>
+            <% end %>
+          </div>
+          <div class="product-info">
+            <h3><%= product.name %></h3>
+            <p class="category"><%= product.category.name %></p>
+            <p class="sku">SKU: <%= product.sku %></p>
+            <div class="product-footer">
+              <p class="stock"><%= product.stock_quantity > 0 ? 'In Stock' : 'Out of Stock' %></p>
+              <button class="view-btn">View Details</button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

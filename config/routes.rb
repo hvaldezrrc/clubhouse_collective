@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "products/index"
+  get "products/show"
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   devise_for :users
@@ -11,6 +13,9 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Root path
-  root to: "home#index"
+  # Product routes
+  resources :products, only: [ :index, :show ]
+
+  # Root path to products
+  root "products#index"
 end

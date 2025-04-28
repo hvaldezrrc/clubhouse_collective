@@ -1,0 +1,70 @@
+<div class="container product-detail">
+  <div class="breadcrumb">
+    <%= link_to "Home", root_path %> >
+    <%= link_to @product.category.name, products_path(category_id: @product.category.id) %> >
+    <%= @product.name %>
+  </div>
+
+  <div class="product-container">
+    <div class="product-images">
+      <% if @product.images.attached? %>
+        <div class="main-image">
+          <%= image_tag url_for(@product.images.first), alt: @product.name %>
+        </div>
+        <% if @product.images.count > 1 %>
+          <div class="thumbnail-images">
+            <% @product.images.each do |image| %>
+              <%= image_tag url_for(image), class: 'thumbnail', alt: @product.name %>
+            <% end %>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="no-image">No Image Available</div>
+      <% end %>
+    </div>
+
+    <div class="product-info">
+      <h1><%= @product.name %></h1>
+      <p class="category">Category: <%= link_to @product.category.name, products_path(category_id: @product.category.id) %></p>
+      <p class="sku">SKU: <%= @product.sku %></p>
+
+      <div class="product-description">
+        <h3>Description</h3>
+        <p><%= @product.description %></p>
+      </div>
+
+      <div class="stock-info">
+        <% if @product.stock_quantity > 0 %>
+          <span class="in-stock">In Stock</span>
+          <p><%= @product.stock_quantity %> available</p>
+        <% else %>
+          <span class="out-of-stock">Out of Stock</span>
+        <% end %>
+      </div>
+
+      <div class="product-actions">
+        <button class="add-to-cart-btn">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="related-products">
+    <h2>Related Products</h2>
+    <div class="related-products-grid">
+      <% @related_products.each do |product| %>
+        <div class="related-product-card">
+          <%= link_to product_path(product) do %>
+            <div class="product-image">
+              <% if product.images.attached? %>
+                <%= image_tag url_for(product.images.first), alt: product.name %>
+              <% else %>
+                <div class="no-image">No Image</div>
+              <% end %>
+            </div>
+            <h3><%= product.name %></h3>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
