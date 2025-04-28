@@ -23,14 +23,24 @@
 
       <h3>Filters</h3>
       <ul>
-        <li><%= link_to "On Sale", products_path(on_sale: "true", category_id: params[:category_id]) %></li>
-        <li><%= link_to "New Products", products_path(new: "true", category_id: params[:category_id]) %></li>
-        <li><%= link_to "Recently Updated", products_path(recently_updated: "true", category_id: params[:category_id]) %></li>
-        <li><%= link_to "Clear Filters", products_path(category_id: params[:category_id]) %></li>
+        <li><%= link_to "On Sale", products_path(on_sale: "true", category_id: params[:category_id], search: params[:search]) %></li>
+        <li><%= link_to "New Products", products_path(new: "true", category_id: params[:category_id], search: params[:search]) %></li>
+        <li><%= link_to "Recently Updated", products_path(recently_updated: "true", category_id: params[:category_id], search: params[:search]) %></li>
+        <li><%= link_to "Clear Filters", products_path(category_id: params[:category_id], search: params[:search]) %></li>
       </ul>
     </div>
 
     <div class="products-section">
+      <%= form_tag(products_path, method: :get, class: "search-form") do %>
+        <div class="search-input">
+          <%= text_field_tag :search, params[:search], placeholder: "Search by product name or description", class: "search-field" %>
+        </div>
+        <div class="category-select">
+          <%= select_tag :category_id, options_for_select([['All Categories', nil]] + @categories.map { |category| [category.name, category.id] }, selected: params[:category_id]), prompt: "Select Category" %>
+        </div>
+        <%= submit_tag "Search", class: "search-btn" %>
+      <% end %>
+
       <% if @current_category %>
         <div class="category-header">
           <h2><%= @current_category.name %></h2>
