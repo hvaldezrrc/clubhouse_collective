@@ -3,19 +3,19 @@
     <%= link_to "Home", root_path %> >
     <%= link_to "Products", products_path %> >
     <%= link_to @product.category.name, products_path(category_id: @product.category.id) %> >
-    <%= @product.name %>
+    <span><%= @product.name %></span>
   </div>
 
   <div class="product-container">
     <div class="product-images">
       <% if @product.images.attached? %>
         <div class="main-image">
-          <%= image_tag url_for(@product.images.first), alt: @product.name %>
+          <img src="<%= rails_blob_path(@product.images.first, only_path: true) %>" alt="<%= @product.name %>">
         </div>
         <% if @product.images.count > 1 %>
           <div class="thumbnail-images">
             <% @product.images.each do |image| %>
-              <%= image_tag url_for(image), class: 'thumbnail', alt: @product.name %>
+              <img src="<%= rails_blob_path(image, only_path: true) %>" class="thumbnail" alt="<%= @product.name %>">
             <% end %>
           </div>
         <% end %>
@@ -49,23 +49,25 @@
     </div>
   </div>
 
-  <div class="related-products">
-    <h2>Related Products</h2>
-    <div class="related-products-grid">
-      <% @related_products.each do |product| %>
-        <div class="related-product-card">
-          <%= link_to product_path(product) do %>
-            <div class="product-image">
-              <% if product.images.attached? %>
-                <%= image_tag url_for(product.images.first), alt: product.name %>
-              <% else %>
-                <div class="no-image">No Image</div>
-              <% end %>
-            </div>
-            <h3><%= product.name %></h3>
-          <% end %>
-        </div>
-      <% end %>
+  <% if @related_products.any? %>
+    <div class="related-products">
+      <h2>Related Products</h2>
+      <div class="related-products-grid">
+        <% @related_products.each do |product| %>
+          <div class="related-product-card">
+            <%= link_to product_path(product) do %>
+              <div class="product-image">
+                <% if product.images.attached? %>
+                  <img src="<%= rails_blob_path(product.images.first, only_path: true) %>" alt="<%= product.name %>">
+                <% else %>
+                  <div class="no-image">No Image</div>
+                <% end %>
+              </div>
+              <h3><%= product.name %></h3>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
     </div>
-  </div>
+  <% end %>
 </div>
