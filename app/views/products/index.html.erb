@@ -20,6 +20,14 @@
           </li>
         <% end %>
       </ul>
+
+      <h3>Filters</h3>
+      <ul>
+        <li><%= link_to "On Sale", products_path(on_sale: "true", category_id: params[:category_id]) %></li>
+        <li><%= link_to "New Products", products_path(new: "true", category_id: params[:category_id]) %></li>
+        <li><%= link_to "Recently Updated", products_path(recently_updated: "true", category_id: params[:category_id]) %></li>
+        <li><%= link_to "Clear Filters", products_path(category_id: params[:category_id]) %></li>
+      </ul>
     </div>
 
     <div class="products-section">
@@ -61,7 +69,7 @@
           <% end %>
         <% else %>
           <div class="no-products">
-            <p>No products found in this category.</p>
+            <p>No products found based on your filters.</p>
           </div>
         <% end %>
       </div>

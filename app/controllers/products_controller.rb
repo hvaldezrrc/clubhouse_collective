@@ -9,6 +9,22 @@ class ProductsController < ApplicationController
       @products = Product.all
     end
 
+    if params[:on_sale] == "true"
+      @products = @products.where(on_sale: true) if params[:on_sale] == "true"
+    end
+
+    if params[:new] == "true"
+      @products = @products.where("created_at >= ?", 3.days.ago)
+    end
+
+    if params[:recently_updated] == "true"
+      @products = @products.where("updated_at >= ?", 3.days.ago)
+    end
+
+    if params[:new] == "true"
+      @products = @products.where("created_at >= ?", 3.days.ago).where("updated_at < ?", 3.days.ago)
+    end
+
     @products = @products.includes(:category).order(created_at: :desc).page(params[:page]).per(20)
   end
 
