@@ -1,14 +1,15 @@
 class ProductsController < ApplicationController
   def index
     @categories = Category.all
-    @products = Product.all.includes(:category)
 
     if params[:category_id].present?
-      @products = @products.where(category_id: params[:category_id])
       @current_category = Category.find_by(id: params[:category_id])
+      @products = @current_category ? @current_category.products : Product.none
+    else
+      @products = Product.all
     end
 
-    @products = @products.order(created_at: :desc)
+    @products = @products.includes(:category).order(created_at: :desc).page(params[:page]).per(20)
   end
 
   def show

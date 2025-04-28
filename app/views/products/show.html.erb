@@ -1,6 +1,7 @@
 <div class="container product-detail">
   <div class="breadcrumb">
     <%= link_to "Home", root_path %> >
+    <%= link_to "Products", products_path %> >
     <%= link_to @product.category.name, products_path(category_id: @product.category.id) %> >
     <%= @product.name %>
   </div>
