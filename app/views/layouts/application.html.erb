@@ -292,6 +292,398 @@
         background: #059669;
       }
 
+      .checkout-page {
+        margin-top: 30px;
+        max-width: 800px;
+      }
+
+      .checkout-page h1 {
+        margin-bottom: 30px;
+        color: #2c3e50;
+      }
+
+      .checkout-progress {
+        display: flex;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #e1e1e1;
+        padding-bottom: 20px;
+      }
+
+      .checkout-progress .step {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        color: #95a5a6;
+        position: relative;
+      }
+
+      .checkout-progress .step::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-color: #f8f9fa;
+        border: 1px solid #e1e1e1;
+        border-radius: 50%;
+        bottom: -10px;
+        left: calc(50% - 10px);
+      }
+
+      .checkout-progress .step.active {
+        color: #3498db;
+        font-weight: bold;
+      }
+
+      .checkout-progress .step.active::after {
+        background-color: #3498db;
+        border-color: #3498db;
+      }
+
+      .checkout-progress .step.completed {
+        color: #27ae60;
+      }
+
+      .checkout-progress .step.completed::after {
+        background-color: #27ae60;
+        border-color: #27ae60;
+      }
+
+      .checkout-form {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #2c3e50;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e1e1e1;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+      }
+
+      .back-btn {
+        background-color: #7f8c8d;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 1rem;
+      }
+
+      .back-btn:hover {
+        background-color: #95a5a6;
+      }
+
+      .continue-btn, .place-order-btn {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+
+      .continue-btn:hover {
+        background-color: #2980b9;
+      }
+
+      .place-order-btn {
+        background-color: #27ae60;
+      }
+
+      .place-order-btn:hover {
+        background-color: #2ecc71;
+      }
+
+      .order-summary {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 30px;
+      }
+
+      .order-summary h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        font-size: 1.5rem;
+      }
+
+      .summary-table {
+        width: 100%;
+      }
+
+      .summary-table td {
+        padding: 8px 0;
+        border-bottom: 1px solid #e1e1e1;
+      }
+
+      .summary-table .price {
+        text-align: right;
+        font-weight: bold;
+      }
+
+      .summary-table .total {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #2c3e50;
+      }
+
+      .payment-form {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 30px;
+      }
+
+      .demo-notice {
+        padding: 15px;
+        background-color: #f39c12;
+        color: white;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+
+      .order-details {
+        margin-bottom: 30px;
+      }
+
+      .address-details, .payment-details {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+
+      .address-details h2, .payment-details h2 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #2c3e50;
+        font-size: 1.3rem;
+      }
+
+      .error-messages {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+
+      .error-messages ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .order-total {
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      .total-amount {
+        color: #27ae60;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      .dashboard-page {
+        margin-top: 30px;
+      }
+
+      .dashboard-page h1 {
+        margin-bottom: 30px;
+        color: #2c3e50;
+      }
+
+      .dashboard-welcome {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 30px;
+      }
+
+      .dashboard-section {
+        margin-bottom: 40px;
+      }
+
+      .dashboard-section h2 {
+        margin-bottom: 20px;
+        color: #2c3e50;
+        font-size: 1.5rem;
+      }
+
+      .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+
+      .orders-table th {
+        background-color: #f8f9fa;
+        padding: 12px;
+        text-align: left;
+        color: #2c3e50;
+        font-weight: 600;
+      }
+
+      .orders-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e1e1e1;
+      }
+
+      .status {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .status.pending {
+        background-color: #f1c40f;
+        color: #7f8c8d;
+      }
+
+      .status.processing {
+        background-color: #3498db;
+        color: white;
+      }
+
+      .status.shipped {
+        background-color: #9b59b6;
+        color: white;
+      }
+
+      .status.delivered {
+        background-color: #27ae60;
+        color: white;
+      }
+
+      .status.cancelled {
+        background-color: #e74c3c;
+        color: white;
+      }
+
+      .view-btn {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+
+      .view-btn:hover {
+        background-color: #2980b9;
+      }
+
+      .view-all {
+        text-align: right;
+        margin-top: 20px;
+      }
+
+      .view-all-btn {
+        display: inline-block;
+        background-color: #7f8c8d;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+
+      .view-all-btn:hover {
+        background-color: #95a5a6;
+      }
+
+      .no-orders {
+        background-color: #f8f9fa;
+        padding: 30px;
+        text-align: center;
+        border-radius: 5px;
+        color: #7f8c8d;
+        font-size: 1.1rem;
+      }
+
+      .shop-btn {
+        display: block;
+        width: 200px;
+        margin: 20px auto;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 0;
+        border-radius: 4px;
+        text-decoration: none;
+        text-align: center;
+        font-size: 1rem;
+      }
+
+      .shop-btn:hover {
+        background-color: #2980b9;
+      }
+
+      .order-meta {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 30px;
+      }
+
+      .order-details {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .shipping-address, .order-items {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+      }
+
+      .shipping-address h2, .order-items h2 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #2c3e50;
+        font-size: 1.3rem;
+      }
+
+      .order-items-table {
+        width: 100%;
+      }
+
+      .product-category {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        margin: 0;
+      }
+
       @media (max-width: 768px) {
         .header-container, .footer-container {
           flex-direction: column;

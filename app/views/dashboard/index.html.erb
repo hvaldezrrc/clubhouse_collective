@@ -1,0 +1,44 @@
+<div class="container dashboard-page">
+  <h1>My Dashboard</h1>
+
+  <div class="dashboard-welcome">
+    <p>Welcome back, <%= current_user.first_name %>!</p>
+  </div>
+
+  <div class="dashboard-section">
+    <h2>Recent Orders</h2>
+
+    <% if @recent_orders.any? %>
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @recent_orders.each do |order| %>
+            <tr>
+              <td><%= order.id %></td>
+              <td><%= order.created_at.strftime("%b %d, %Y") %></td>
+              <td><span class="status <%= order.status %>"><%= order.status.capitalize %></span></td>
+              <td><%= number_to_currency(order.total_amount) %></td>
+              <td>
+                <%= link_to "View", dashboard_order_path(order), class: "view-btn" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <div class="view-all">
+        <%= link_to "View All Orders", dashboard_orders_path, class: "view-all-btn" %>
+      </div>
+    <% else %>
+      <p class="no-orders">You don't have any orders yet.</p>
+    <% end %>
+  </div>
+</div>

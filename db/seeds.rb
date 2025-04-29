@@ -222,3 +222,36 @@ unless StaticPage.exists?(slug: 'contact')
   )
   puts "Contact page created!"
 end
+
+# Provinces with tax rates
+provinces_data = [
+  { name: 'Alberta', code: 'AB', gst: 0.05, pst: 0.00, hst: 0.00 },
+  { name: 'British Columbia', code: 'BC', gst: 0.05, pst: 0.07, hst: 0.00 },
+  { name: 'Manitoba', code: 'MB', gst: 0.05, pst: 0.07, hst: 0.00 },
+  { name: 'New Brunswick', code: 'NB', gst: 0.00, pst: 0.00, hst: 0.15 },
+  { name: 'Newfoundland and Labrador', code: 'NL', gst: 0.00, pst: 0.00, hst: 0.15 },
+  { name: 'Northwest Territories', code: 'NT', gst: 0.05, pst: 0.00, hst: 0.00 },
+  { name: 'Nova Scotia', code: 'NS', gst: 0.00, pst: 0.00, hst: 0.15 },
+  { name: 'Nunavut', code: 'NU', gst: 0.05, pst: 0.00, hst: 0.00 },
+  { name: 'Ontario', code: 'ON', gst: 0.00, pst: 0.00, hst: 0.13 },
+  { name: 'Prince Edward Island', code: 'PE', gst: 0.00, pst: 0.00, hst: 0.15 },
+  { name: 'Quebec', code: 'QC', gst: 0.05, pst: 0.09975, hst: 0.00 },
+  { name: 'Saskatchewan', code: 'SK', gst: 0.05, pst: 0.06, hst: 0.00 },
+  { name: 'Yukon', code: 'YT', gst: 0.05, pst: 0.00, hst: 0.00 }
+]
+
+provinces_data.each do |province_data|
+  province = Province.find_or_create_by!(
+    name: province_data[:name],
+    code: province_data[:code]
+  )
+
+  TaxRate.find_or_create_by!(
+    province: province,
+    gst: province_data[:gst],
+    pst: province_data[:pst],
+    hst: province_data[:hst]
+  )
+
+  puts "Created #{province.name} with tax rates: GST: #{province_data[:gst]}, PST: #{province_data[:pst]}, HST: #{province_data[:hst]}"
+end

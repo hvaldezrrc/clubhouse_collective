@@ -1,0 +1,46 @@
+<div class="container checkout-page">
+  <h1>Checkout - Step 1: Shipping Information</h1>
+
+  <div class="checkout-progress">
+    <div class="step active">Address</div>
+    <div class="step">Payment</div>
+    <div class="step">Confirm</div>
+  </div>
+
+  <%= form_with(model: @address, url: checkout_address_path, class: "checkout-form") do |f| %>
+    <% if @address.errors.any? %>
+      <div class="error-messages">
+        <ul>
+          <% @address.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :street, "Street Address" %>
+      <%= f.text_field :street, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :city %>
+      <%= f.text_field :city, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :province_id, "Province" %>
+      <%= f.collection_select :province_id, @provinces, :id, :name, { prompt: "Select a province" }, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :postal_code %>
+      <%= f.text_field :postal_code, class: "form-control" %>
+    </div>
+
+    <div class="form-actions">
+      <%= link_to "Back to Cart", cart_path, class: "back-btn" %>
+      <%= f.submit "Continue to Payment", class: "continue-btn" %>
+    </div>
+  <% end %>
+</div>

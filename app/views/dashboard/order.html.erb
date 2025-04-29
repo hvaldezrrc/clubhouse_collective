@@ -1,0 +1,85 @@
+<div class="container dashboard-page">
+  <h1>Order #<%= @order.id %></h1>
+
+  <div class="order-meta">
+    <p><strong>Date:</strong> <%= @order.created_at.strftime("%b %d, %Y at %I:%M %p") %></p>
+    <p><strong>Status:</strong> <span class="status <%= @order.status %>"><%= @order.status.capitalize %></span></p>
+  </div>
+
+  <div class="order-details">
+    <div class="shipping-address">
+      <h2>Shipping Address</h2>
+      <% if @order.shipping_address %>
+        <% address = @order.shipping_address %>
+        <p><%= address.street %></p>
+        <p><%= address.city %>, <%= address.province.code %> <%= address.postal_code %></p>
+      <% else %>
+        <p>No shipping address provided.</p>
+      <% end %>
+    </div>
+
+    <div class="order-items">
+      <h2>Order Items</h2>
+      <table class="order-items-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @order.order_items.each do |item| %>
+            <tr>
+              <td class="product-info">
+                <% if item.product.images.attached? %>
+                  <img src="<%= rails_blob_path(item.product.images.first, only_path: true) %>" alt="<%= item.product.name %>" class="cart-thumbnail">
+                <% end %>
+                <div>
+                  <h3><%= link_to item.product.name, product_path(item.product) %></h3>
+                  <p class="product-category"><%= item.product.category.name %></p>
+                </div>
+              </td>
+              <td class="price"><%= number_to_currency(item.price) %></td>
+              <td class="quantity"><%= item.quantity %></td>
+              <td class="total"><%= number_to_currency(item.price * item.quantity) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="text-right"><strong>Subtotal:</strong></td>
+            <td class="subtotal"><%= number_to_currency(@order.subtotal) %></td>
+          </tr>
+          <% if @order.gst_amount > 0 %>
+            <tr>
+              <td colspan="3" class="text-right">GST:</td>
+              <td><%= number_to_currency(@order.gst_amount) %></td>
+            </tr>
+          <% end %>
+          <% if @order.pst_amount > 0 %>
+            <tr>
+              <td colspan="3" class="text-right">PST:</td>
+              <td><%= number_to_currency(@order.pst_amount) %></td>
+            </tr>
+          <% end %>
+          <% if @order.hst_amount > 0 %>
+            <tr>
+              <td colspan="3" class="text-right">HST:</td>
+              <td><%= number_to_currency(@order.hst_amount) %></td>
+            </tr>
+          <% end %>
+          <tr class="order-total">
+            <td colspan="3" class="text-right"><strong>Total:</strong></td>
+            <td class="total-amount"><%= number_to_currency(@order.total_amount) %></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div class="order-actions">
+    <%= link_to "Back to Orders", dashboard_orders_path, class: "back-btn" %>
+  </div>
+</div>

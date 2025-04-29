@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_28_023610) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_29_201815) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -63,6 +63,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_023610) do
     t.string "country"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "province_id"
     t.index ["user_id"], name: "index_addresses_on_user_id"
   end
 
@@ -161,7 +162,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_023610) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "on_sale"
+    t.decimal "price"
     t.index ["category_id"], name: "index_products_on_category_id"
+  end
+
+  create_table "provinces", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_provinces_on_code", unique: true
   end
 
   create_table "reviews", force: :cascade do |t|
@@ -189,6 +199,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_023610) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_static_pages_on_slug", unique: true
+  end
+
+  create_table "tax_rates", force: :cascade do |t|
+    t.integer "province_id", null: false
+    t.decimal "gst", precision: 5, scale: 3, default: "0.0"
+    t.decimal "pst", precision: 5, scale: 3, default: "0.0"
+    t.decimal "hst", precision: 5, scale: 3, default: "0.0"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["province_id"], name: "index_tax_rates_on_province_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -225,4 +245,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_28_023610) do
   add_foreign_key "reviews", "products"
   add_foreign_key "reviews", "users"
   add_foreign_key "shopping_carts", "users"
+  add_foreign_key "tax_rates", "provinces"
 end

@@ -56,9 +56,11 @@
       </table>
 
       <div class="cart-actions">
-        <%= button_to "Empty Cart", cart_empty_path, method: :delete, class: "empty-cart-btn", data: { confirm: "Are you sure you want to empty your cart?" } %>
-        <%= link_to "Continue Shopping", products_path, class: "continue-shopping-btn" %>
-        <%= link_to "Proceed to Checkout", "#", class: "checkout-btn" %>
+        <div class="cart-actions">
+          <%= button_to "Empty Cart", cart_empty_path, method: :delete, class: "empty-cart-btn", data: { confirm: "Are you sure you want to empty your cart?" } %>
+          <%= link_to "Continue Shopping", products_path, class: "continue-shopping-btn" %>
+          <%= link_to "Proceed to Checkout", checkout_address_path, class: "checkout-btn" %>
+        </div>
       </div>
     </div>
   <% end %>

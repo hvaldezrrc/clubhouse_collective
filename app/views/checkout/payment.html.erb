@@ -1,0 +1,50 @@
+<div class="container checkout-page">
+  <h1>Checkout - Step 2: Payment Information</h1>
+
+  <div class="checkout-progress">
+    <div class="step completed">Address</div>
+    <div class="step active">Payment</div>
+    <div class="step">Confirm</div>
+  </div>
+
+  <div class="order-summary">
+    <h2>Order Summary</h2>
+    <table class="summary-table">
+      <tr>
+        <td>Subtotal:</td>
+        <td class="price">$<%= sprintf("%.2f", @subtotal) %></td>
+      </tr>
+      <% if @tax_rate.gst > 0 %>
+        <tr>
+          <td>GST (<%= (@tax_rate.gst * 100).round(2) %>%):</td>
+          <td class="price">$<%= sprintf("%.2f", @gst_amount) %></td>
+        </tr>
+      <% end %>
+      <% if @tax_rate.pst > 0 %>
+        <tr>
+          <td>PST (<%= (@tax_rate.pst * 100).round(2) %>%):</td>
+          <td class="price">$<%= sprintf("%.2f", @pst_amount) %></td>
+        </tr>
+      <% end %>
+      <% if @tax_rate.hst > 0 %>
+        <tr>
+          <td>HST (<%= (@tax_rate.hst * 100).round(2) %>%):</td>
+          <td class="price">$<%= sprintf("%.2f", @hst_amount) %></td>
+        </tr>
+      <% end %>
+      <tr class="total">
+        <td>Total:</td>
+        <td class="price">$<%= sprintf("%.2f", @total_amount) %></td>
+      </tr>
+    </table>
+  </div>
+
+  <%= form_with(url: checkout_payment_path, class: "payment-form") do |f| %>
+    <p class="demo-notice">This is a demo store. No actual payment will be processed.</p>
+
+    <div class="form-actions">
+      <%= link_to "Back to Address", checkout_address_path, class: "back-btn" %>
+      <%= f.submit "Continue to Review", class: "continue-btn" %>
+    </div>
+  <% end %>
+</div>

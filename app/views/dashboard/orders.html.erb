@@ -1,0 +1,35 @@
+<div class="container dashboard-page">
+  <h1>My Orders</h1>
+
+  <% if @orders.any? %>
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>Order #</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Total</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @orders.each do |order| %>
+          <tr>
+            <td><%= order.id %></td>
+            <td><%= order.created_at.strftime("%b %d, %Y") %></td>
+            <td><span class="status <%= order.status %>"><%= order.status.capitalize %></span></td>
+            <td><%= number_to_currency(order.total_amount) %></td>
+            <td>
+              <%= link_to "View", dashboard_order_path(order), class: "view-btn" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <%= paginate @orders %>
+  <% else %>
+    <p class="no-orders">You don't have any orders yet.</p>
+    <%= link_to "Start Shopping", products_path, class: "shop-btn" %>
+  <% end %>
+</div>
