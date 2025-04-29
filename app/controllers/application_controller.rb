@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
+
+  helper_method :cart_count
 
   def authenticate_admin_user!
     authenticate_user!
@@ -9,5 +10,19 @@ class ApplicationController < ActionController::Base
 
   def access_denied(exception)
     redirect_to root_path, alert: exception.message
+  end
+
+  def cart_count
+    if session[:cart].present?
+      session[:cart].sum { |item| item[:quantity].to_i }
+    else
+      0
+    end
+  end
+
+  private
+
+  def initialize_cart
+    session[:cart] ||= []
   end
 end

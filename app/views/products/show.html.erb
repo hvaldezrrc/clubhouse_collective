@@ -44,7 +44,17 @@
       </div>
 
       <div class="product-actions">
-        <button class="add-to-cart-btn">Add to Cart</button>
+        <% if @product.stock_quantity > 0 %>
+          <%= form_with(url: cart_add_path(@product.id), method: :post, class: "add-to-cart-form") do |f| %>
+            <div class="quantity-selector">
+              <%= f.label :quantity, "Quantity:" %>
+              <%= f.number_field :quantity, value: 1, min: 1, max: @product.stock_quantity, class: "quantity-input" %>
+            </div>
+            <%= f.submit "Add to Cart", class: "add-to-cart-btn" %>
+          <% end %>
+        <% else %>
+          <button class="out-of-stock-btn" disabled>Out of Stock</button>
+        <% end %>
       </div>
     </div>
   </div>

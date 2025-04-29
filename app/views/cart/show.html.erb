@@ -1,0 +1,65 @@
+<div class="container cart-page">
+  <h1>Your Shopping Cart</h1>
+
+  <% if @cart_items.empty? %>
+    <div class="empty-cart-message">
+      <p>Your cart is empty.</p>
+      <%= link_to "Continue Shopping", products_path, class: "continue-shopping-btn" %>
+    </div>
+  <% else %>
+    <div class="cart-summary">
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @cart_items.each do |item| %>
+            <tr>
+              <td class="product-info">
+                <% if item[:product].images.attached? %>
+                  <img src="<%= rails_blob_path(item[:product].images.first, only_path: true) %>" alt="<%= item[:product].name %>" class="cart-thumbnail">
+                <% else %>
+                  <div class="no-image">No Image</div>
+                <% end %>
+                <div>
+                  <h3><%= link_to item[:product].name, product_path(item[:product]) %></h3>
+                  <p class="cart-product-category"><%= item[:product].category.name %></p>
+                </div>
+              </td>
+              <td class="price">$<%= sprintf("%.2f", 29.99) %></td>
+              <td class="quantity">
+                <%= form_with(url: cart_update_path(item[:product].id), method: :patch, class: "update-quantity-form") do |f| %>
+                  <%= f.number_field :quantity, value: item[:quantity], min: 1, class: "quantity-input" %>
+                  <%= f.submit "Update", class: "update-btn" %>
+                <% end %>
+              </td>
+              <td class="total">$<%= sprintf("%.2f", 29.99 * item[:quantity]) %></td>
+              <td class="actions">
+                <%= button_to "Remove", cart_remove_path(item[:product].id), method: :delete, class: "remove-btn" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="text-right"><strong>Subtotal:</strong></td>
+            <td class="subtotal">$<%= sprintf("%.2f", @cart_items.sum { |item| 29.99 * item[:quantity] }) %></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div class="cart-actions">
+        <%= button_to "Empty Cart", cart_empty_path, method: :delete, class: "empty-cart-btn", data: { confirm: "Are you sure you want to empty your cart?" } %>
+        <%= link_to "Continue Shopping", products_path, class: "continue-shopping-btn" %>
+        <%= link_to "Proceed to Checkout", "#", class: "checkout-btn" %>
+      </div>
+    </div>
+  <% end %>
+</div>

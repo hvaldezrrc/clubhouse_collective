@@ -54,39 +54,49 @@
       <% end %>
 
       <div class="products-grid">
-        <% if @products.any? %>
-          <% @products.each do |product| %>
-            <div class="product-card">
-              <%= link_to product_path(product) do %>
-                <div class="product-image">
-                  <% if product.images.attached? %>
-                    <img src="<%= rails_blob_path(product.images.first, only_path: true) %>" alt="<%= product.name %>">
-                  <% else %>
-                    <div class="no-image">No Image</div>
-                  <% end %>
+      <% if @products.any? %>
+        <% @products.each do |product| %>
+          <div class="product-card">
+            <%= link_to product_path(product) do %>
+              <div class="product-image">
+                <% if product.images.attached? %>
+                  <img src="<%= rails_blob_path(product.images.first, only_path: true) %>" alt="<%= product.name %>">
+                <% else %>
+                  <div class="no-image">No Image</div>
+                <% end %>
+              </div>
+              <div class="product-info">
+                <h3><%= product.name %></h3>
+                <p class="category"><%= product.category.name %></p>
+                <p class="sku">SKU: <%= product.sku %></p>
+                <div class="product-footer">
+                  <p class="stock"><%= product.stock_quantity > 0 ? 'In Stock' : 'Out of Stock' %></p>
+                  <button class="view-btn">View Details</button>
                 </div>
-                <div class="product-info">
-                  <h3><%= product.name %></h3>
-                  <p class="category"><%= product.category.name %></p>
-                  <p class="sku">SKU: <%= product.sku %></p>
-                  <div class="product-footer">
-                    <p class="stock"><%= product.stock_quantity > 0 ? 'In Stock' : 'Out of Stock' %></p>
-                    <button class="view-btn">View Details</button>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          <% end %>
-        <% else %>
-          <div class="no-products">
-            <p>No products found based on your filters.</p>
+              </div>
+            <% end %>
+
+            <% if product.stock_quantity > 0 %>
+              <div class="quick-add">
+                <%= button_to "Add to Cart", cart_add_path(product.id), method: :post, class: "quick-add-btn" %>
+              </div>
+            <% else %>
+              <div class="quick-add">
+                <button class="out-of-stock-btn" disabled>Out of Stock</button>
+              </div>
+            <% end %>
           </div>
         <% end %>
-      </div>
+      <% else %>
+        <div class="no-products">
+          <p>No products found based on your filters.</p>
+        </div>
+      <% end %>
+    </div>
 
-      <div class="pagination">
-        <%= paginate @products %>
-      </div>
+    <div class="pagination">
+      <%= paginate @products %>
+    </div>
 
     </div>
   </div>
