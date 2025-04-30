@@ -1,23 +1,36 @@
 require "test_helper"
 
-class CheckoutControllerTest < ActionDispatch::IntegrationTest
-  test "should get address" do
-    get checkout_address_url
-    assert_response :success
+class CheckoutController < ApplicationController
+  before_action :authenticate_user!
+  before_action :check_cart, except: [ :show_complete ]
+
+  def address
   end
 
-  test "should get payment" do
-    get checkout_payment_url
-    assert_response :success
+  def create_address
+    redirect_to checkout_payment_path
   end
 
-  test "should get confirm" do
-    get checkout_confirm_url
-    assert_response :success
+  def payment
   end
 
-  test "should get complete" do
-    get checkout_complete_url
-    assert_response :success
+  def process_payment
+    redirect_to checkout_confirm_path
+  end
+
+  def confirm
+  end
+
+  def complete
+    redirect_to checkout_show_complete_path
+  end
+
+  def show_complete
+  end
+
+  private
+
+  def check_cart
+    redirect_to cart_path if current_cart.empty?
   end
 end

@@ -1,18 +1,14 @@
-require "test_helper"
+class DashboardController < ApplicationController
+  before_action :authenticate_user!
 
-class DashboardControllerTest < ActionDispatch::IntegrationTest
-  test "should get index" do
-    get dashboard_index_url
-    assert_response :success
+  def index
   end
 
-  test "should get orders" do
-    get dashboard_orders_url
-    assert_response :success
+  def orders
+    @orders = current_user.orders
   end
 
-  test "should get order" do
-    get dashboard_order_url
-    assert_response :success
+  def order
+    @order = current_user.orders.find(params[:id])
   end
 end

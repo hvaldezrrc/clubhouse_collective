@@ -1,25 +1,22 @@
 Rails.application.routes.draw do
-  get "dashboard/index"
-  get "dashboard/orders"
-  get "dashboard/order"
-  get "checkout/address"
-  get "checkout/payment"
-  get "checkout/confirm"
-  get "checkout/complete"
+  # Admin routes
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
+
+  # User authentication
   devise_for :users
+
+  # Health check
+  get "up" => "rails/health#show", as: :rails_health_check
+
+  # Root path
+  root "home#index"
 
   # Home routes
   get "home/index"
 
-  get "up" => "rails/health#show", as: :rails_health_check
-
   # Product routes
   resources :products, only: [ :index, :show ]
-
-  # Root path to products
-  root "home#index"
 
   # Cart routes
   get "cart", to: "cart#show"
@@ -29,18 +26,19 @@ Rails.application.routes.draw do
   delete "cart/empty", to: "cart#empty", as: "cart_empty"
 
   # Checkout routes
-  get "checkout/address", to: "checkout#address"
+  get "checkout/address", to: "checkout#address", as: "checkout_address"
   post "checkout/address", to: "checkout#create_address"
-  get "checkout/payment", to: "checkout#payment"
+  get "checkout/payment", to: "checkout#payment", as: "checkout_payment"
   post "checkout/payment", to: "checkout#process_payment"
-  get "checkout/confirm", to: "checkout#confirm"
-  post "checkout/complete", to: "checkout#complete"
+  get "checkout/confirm", to: "checkout#confirm", as: "checkout_confirm"
+  post "checkout/complete", to: "checkout#complete", as: "checkout_complete"
+  get "checkout/complete", to: "checkout#show_complete", as: "checkout_show_complete"
 
   # Dashboard Routes
-  get "dashboard", to: "dashboard#index"
-  get "dashboard/orders", to: "dashboard#orders"
+  get "dashboard", to: "dashboard#index", as: "dashboard"
+  get "dashboard/orders", to: "dashboard#orders", as: "dashboard_orders"
   get "dashboard/orders/:id", to: "dashboard#order", as: "dashboard_order"
 
-  # Static pages route
-  get "/:slug", to: "static_pages#show"
+  # Static pages - keep this as the last route
+  get "/:slug", to: "static_pages#show", as: "static_page"
 end
