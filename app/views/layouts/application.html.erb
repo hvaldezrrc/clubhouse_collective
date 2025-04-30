@@ -683,6 +683,253 @@
         font-size: 0.9rem;
         margin: 0;
       }
+      .user-menu {
+        position: relative;
+      }
+
+      .logout-btn {
+        background: none;
+        border: none;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+        padding: 0;
+      }
+
+      .logout-btn:hover {
+        color: #3b82f6;
+      }
+
+      .order-complete {
+        max-width: 800px;
+        margin: 40px auto;
+      }
+
+      .success-message {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+      }
+
+      .success-icon {
+        font-size: 60px;
+        color: #28a745;
+        margin-bottom: 20px;
+      }
+
+      .success-subtitle {
+        font-size: 1.2rem;
+        color: #6c757d;
+      }
+
+      .order-confirmation, .shipping-details, .order-summary, .next-steps {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+      }
+
+      .confirmation-info p {
+        margin-bottom: 10px;
+      }
+
+      .order-items-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .order-items-table th, .order-items-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .order-items-table th {
+        background-color: #f1f3f5;
+      }
+
+      .summary-row td, .total-row td {
+        padding-top: 15px;
+      }
+
+      .total-row {
+        font-weight: bold;
+        font-size: 1.1em;
+      }
+
+      .total-amount {
+        color: #28a745;
+      }
+
+      .order-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+      }
+
+      .shop-btn, .orders-btn {
+        padding: 12px 25px;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+
+      .shop-btn {
+        background-color: #007bff;
+      }
+
+      .orders-btn {
+        background-color: #6c757d;
+      }
+
+      .status {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        text-transform: uppercase;
+      }
+
+      .status.pending {
+        background-color: #ffc107;
+        color: #212529;
+      }
+
+      .status.processing {
+        background-color: #17a2b8;
+        color: white;
+      }
+
+      .status.shipped {
+        background-color: #007bff;
+        color: white;
+      }
+
+      .status.delivered {
+        background-color: #28a745;
+        color: white;
+      }
+
+      .order-complete {
+        max-width: 800px;
+        margin: 40px auto;
+      }
+
+      .success-message {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+      }
+
+      .success-icon {
+        font-size: 60px;
+        color: #28a745;
+        margin-bottom: 20px;
+      }
+
+      .success-subtitle {
+        font-size: 1.2rem;
+        color: #6c757d;
+      }
+
+      .order-confirmation, .shipping-details, .order-summary, .next-steps {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+      }
+
+      .confirmation-info p {
+        margin-bottom: 10px;
+      }
+
+      .order-items-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .order-items-table th, .order-items-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .order-items-table th {
+        background-color: #f1f3f5;
+      }
+
+      .summary-row td, .total-row td {
+        padding-top: 15px;
+      }
+
+      .total-row {
+        font-weight: bold;
+        font-size: 1.1em;
+      }
+
+      .total-amount {
+        color: #28a745;
+      }
+
+      .order-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+      }
+
+      .shop-btn, .orders-btn {
+        padding: 12px 25px;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+
+      .shop-btn {
+        background-color: #007bff;
+      }
+
+      .orders-btn {
+        background-color: #6c757d;
+      }
+
+      .status {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        text-transform: uppercase;
+      }
+
+      .status.pending {
+        background-color: #ffc107;
+        color: #212529;
+      }
+
+      .status.processing {
+        background-color: #17a2b8;
+        color: white;
+      }
+
+      .status.shipped {
+        background-color: #007bff;
+        color: white;
+      }
+
+      .status.delivered {
+        background-color: #28a745;
+        color: white;
+      }
+
+      .status.cancelled {
+        background-color: #dc3545;
+        color: white;
+      }
 
       @media (max-width: 768px) {
         .header-container, .footer-container {
@@ -724,6 +971,20 @@
               <% end %>
             <% end %>
           </li>
+
+          <% if user_signed_in? %>
+            <li class="user-menu">
+              <%= link_to dashboard_path do %>
+                My Account
+              <% end %>
+            </li>
+            <li>
+              <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "logout-btn" %>
+            </li>
+          <% else %>
+            <li><%= link_to "Login", new_user_session_path %></li>
+            <li><%= link_to "Sign Up", new_user_registration_path %></li>
+          <% end %>
         </ul>
       </nav>
     </div>

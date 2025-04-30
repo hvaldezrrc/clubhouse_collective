@@ -2,6 +2,10 @@ class DashboardController < ApplicationController
   before_action :authenticate_user!
 
   def index
+    @user = current_user
+    @address = current_user.address || current_user.build_address
+  end
+  def index
     @recent_orders = current_user.orders.order(created_at: :desc).limit(5)
   end
 

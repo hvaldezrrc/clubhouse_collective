@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_30_040854) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_30_203830) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
@@ -79,6 +79,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_040854) do
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
+  create_table "billing_addresses", force: :cascade do |t|
+    t.string "street"
+    t.string "city"
+    t.string "postal_code"
+    t.integer "province_id", null: false
+    t.integer "order_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_billing_addresses_on_order_id"
+    t.index ["province_id"], name: "index_billing_addresses_on_province_id"
+  end
+
   create_table "cart_items", force: :cascade do |t|
     t.integer "shopping_cart_id", null: false
     t.integer "product_id", null: false
@@ -121,6 +133,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_040854) do
     t.string "payment_method"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "address"
+    t.string "payment_intent_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
@@ -171,6 +185,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_040854) do
     t.string "code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "gst"
+    t.decimal "pst"
+    t.decimal "hst"
     t.index ["code"], name: "index_provinces_on_code", unique: true
   end
 
@@ -183,6 +200,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_040854) do
     t.datetime "updated_at", null: false
     t.index ["product_id"], name: "index_reviews_on_product_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
+  end
+
+  create_table "shipping_addresses", force: :cascade do |t|
+    t.string "street"
+    t.string "city"
+    t.string "postal_code"
+    t.integer "province_id", null: false
+    t.integer "order_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_shipping_addresses_on_order_id"
+    t.index ["province_id"], name: "index_shipping_addresses_on_province_id"
   end
 
   create_table "shopping_carts", force: :cascade do |t|
@@ -224,13 +253,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_040854) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.string "username"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "addresses", "users"
+  add_foreign_key "billing_addresses", "orders"
+  add_foreign_key "billing_addresses", "provinces"
   add_foreign_key "cart_items", "product_variants"
   add_foreign_key "cart_items", "products"
   add_foreign_key "cart_items", "shopping_carts"
@@ -244,6 +277,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_30_040854) do
   add_foreign_key "products", "categories"
   add_foreign_key "reviews", "products"
   add_foreign_key "reviews", "users"
+  add_foreign_key "shipping_addresses", "orders"
+  add_foreign_key "shipping_addresses", "provinces"
   add_foreign_key "shopping_carts", "users"
   add_foreign_key "tax_rates", "provinces"
 end

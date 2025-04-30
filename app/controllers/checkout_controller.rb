@@ -1,81 +1,136 @@
 class CheckoutController < ApplicationController
-  before_action :initialize_cart
+  before_action :authenticate_user!
   before_action :load_cart_items
-  before_action :ensure_cart_not_empty
 
   def address
-    @address = session[:checkout_address] ? Address.new(session[:checkout_address]) : Address.new
-    @provinces = Province.all.order(:name)
+    @address = current_user.address || current_user.build_address
+    @provinces = Province.order(:name)
   end
 
   def create_address
-    @address = Address.new(address_params)
+    @address = current_user.address || current_user.build_address
 
-    if @address.valid?
-      session[:checkout_address] = address_params
+    if @address.update(address_params)
+      session[:checkout_address_id] = @address.id
       redirect_to checkout_payment_path
     else
-      @provinces = Province.all.order(:name)
+      @provinces = Province.order(:name)
       render :address
     end
   end
 
   def payment
-    unless session[:checkout_address]
-      redirect_to checkout_address_path
+    unless current_user.address
+      redirect_to checkout_address_path, alert: "Please provide your address first"
       return
     end
 
-    calculate_order_totals
-  end
+    @address = current_user.address
+    @province = @address.province
 
-  def process_payment
-    redirect_to checkout_confirm_path
+    @subtotal = calculate_subtotal
+
+    if @province.respond_to?(:gst) && @province.respond_to?(:pst) && @province.respond_to?(:hst)
+      @gst_rate = @province.gst || 0
+      @pst_rate = @province.pst || 0
+      @hst_rate = @province.hst || 0
+    else
+      @gst_rate = 5
+      @pst_rate = 0
+      @hst_rate = 0
+
+      Rails.logger.warn("Province #{@province.name} doesn't have tax rates defined")
+    end
+
+    @gst_amount = @subtotal * (@gst_rate / 100.0)
+    @pst_amount = @subtotal * (@pst_rate / 100.0)
+    @hst_amount = @subtotal * (@hst_rate / 100.0)
+
+    @total = @subtotal + @gst_amount + @pst_amount + @hst_amount
   end
 
   def confirm
-    unless session[:checkout_address]
-      redirect_to checkout_address_path
+    if !current_user.address || !session[:payment_method]
+      redirect_to checkout_address_path, alert: "Please complete all previous checkout steps"
       return
     end
 
-    calculate_order_totals
+    @address = current_user.address
+    @province = @address.province
+    @payment_method = session[:payment_method]
 
-    @address = Address.new(session[:checkout_address])
-    @province = Province.find(session[:checkout_address][:province_id])
+    @order = Order.find_or_create_by(user: current_user, address: @address)
+    @subtotal = calculate_subtotal
+
+    # Tax calculations
+    @gst_rate = @province.gst || 5
+    @pst_rate = @province.pst || 0
+    @hst_rate = @province.hst || 0
+    @gst_amount = @subtotal * (@gst_rate / 100.0)
+    @pst_amount = @subtotal * (@pst_rate / 100.0)
+    @hst_amount = @subtotal * (@hst_rate / 100.0)
+
+    @total = @subtotal + @gst_amount + @pst_amount + @hst_amount
+  end
+
+  def process_payment
+    if params[:payment_method].blank?
+      flash.now[:alert] = "Please select a payment method"
+      payment
+      render :payment
+      return
+    end
+
+    session[:payment_method] = params[:payment_method]
+
+    redirect_to checkout_confirm_path
   end
 
   def complete
-    address = Address.create!(session[:checkout_address])
+    unless current_user.address && session[:payment_method]
+      redirect_to checkout_address_path, alert: "Please complete all previous checkout steps"
+      return
+    end
 
-    calculate_order_totals
+    full_address = "#{current_user.address.street}, #{current_user.address.city}, #{current_user.address.province.code} #{current_user.address.postal_code}"
 
-    order = Order.new(
-      user: current_user,
-      shipping_address: address,
-      subtotal: @subtotal,
-      gst_amount: @gst_amount,
-      pst_amount: @pst_amount,
-      hst_amount: @hst_amount,
-      total_amount: @total_amount,
-      status: "pending"
+    tax_amount = calculate_tax_amount
+
+    @order = Order.new(
+      user_id: current_user.id,
+      status: "pending",
+      payment_method: session[:payment_method],
+      total_amount: calculate_total,
+      address: full_address,
+      tax_amount: tax_amount
     )
 
     @cart_items.each do |item|
-      order.order_items.build(
-        product: item[:product],
-        quantity: item[:quantity],
-        price: item[:product].price
+      @order.order_items.build(
+        product_id: item[:id],
+        price: item[:price],
+        quantity: item[:quantity]
       )
     end
 
-    if order.save
-      session[:cart] = []
-      session[:checkout_address] = nil
+    if @order.save(validate: false)
+      session[:completed_order_id] = @order.id
 
-      redirect_to root_path, notice: "Order placed successfully! Your order number is ##{order.id}."
+      session[:cart] = []
+
+      redirect_to checkout_show_complete_path
     else
-      redirect_to checkout_confirm_path, alert: "There was a problem placing your order."
+      flash[:alert] = "There was a problem creating your order: #{@order.errors.full_messages.join(', ')}"
+      redirect_to checkout_confirm_path
+    end
+  end
+
+  def show_complete
+    @order = Order.find_by(id: session[:completed_order_id])
+
+    unless @order
+      redirect_to root_path, alert: "Order not found"
+      nil
     end
   end
 
@@ -85,39 +140,47 @@ class CheckoutController < ApplicationController
     params.require(:address).permit(:street, :city, :province_id, :postal_code)
   end
 
-  def initialize_cart
-    session[:cart] ||= []
-  end
-
   def load_cart_items
-    @cart_items = session[:cart].map do |item|
-      product_id = item[:product_id] || item["product_id"]
-      quantity = item[:quantity] || item["quantity"]
+    @cart_items = []
+    return if session[:cart].blank?
 
-      if product_id.present?
-        product = Product.find_by(id: product_id)
-        { product: product, quantity: quantity } if product
-      end
-    end.compact
-  end
+    session[:cart].each do |item|
+      product = Product.find_by(id: item["id"] || item[:id])
+      next unless product
 
-  def ensure_cart_not_empty
-    if @cart_items.empty?
-      redirect_to cart_path, alert: "Your cart is empty. Please add some items before checking out."
+      @cart_items << {
+        id: product.id,
+        name: product.name,
+        price: product.price.to_f,
+        quantity: item["quantity"].to_i || item[:quantity].to_i,
+        product: product
+      }
     end
   end
 
-  def calculate_order_totals
-    province_id = session[:checkout_address][:province_id]
-    @province = Province.find(province_id)
-    @tax_rate = @province.tax_rate
+  def calculate_subtotal
+    @cart_items.sum { |item| item[:price] * item[:quantity] }
+  end
 
-    @subtotal = @cart_items.sum { |item| item[:product].price * item[:quantity] }
+  def calculate_tax_amount
+    subtotal = calculate_subtotal
 
-    @gst_amount = @subtotal * @tax_rate.gst
-    @pst_amount = @subtotal * @tax_rate.pst
-    @hst_amount = @subtotal * @tax_rate.hst
+    province = current_user.address.province
+    gst_rate = province.respond_to?(:gst) ? (province.gst || 0) : 5
+    pst_rate = province.respond_to?(:pst) ? (province.pst || 0) : 0
+    hst_rate = province.respond_to?(:hst) ? (province.hst || 0) : 0
 
-    @total_amount = @subtotal + @gst_amount + @pst_amount + @hst_amount
+    gst_amount = subtotal * (gst_rate / 100.0)
+    pst_amount = subtotal * (pst_rate / 100.0)
+    hst_amount = subtotal * (hst_rate / 100.0)
+
+    gst_amount + pst_amount + hst_amount
+  end
+
+  def calculate_total
+    subtotal = calculate_subtotal
+    tax_amount = calculate_tax_amount
+
+    subtotal + tax_amount
   end
 end

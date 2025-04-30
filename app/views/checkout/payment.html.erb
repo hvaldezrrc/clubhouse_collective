@@ -14,33 +14,56 @@
         <td>Subtotal:</td>
         <td class="price">$<%= sprintf("%.2f", @subtotal) %></td>
       </tr>
-      <% if @tax_rate.gst > 0 %>
+      <% if @gst_amount > 0 %>
         <tr>
-          <td>GST (<%= (@tax_rate.gst * 100).round(2) %>%):</td>
-          <td class="price">$<%= sprintf("%.2f", @gst_amount) %></td>
+          <td>GST (<%= @cart.gst_rate %>%):</td>
+          <td class="price">$<%= sprintf("%.2f", @cart.gst_amount) %></td>
         </tr>
       <% end %>
-      <% if @tax_rate.pst > 0 %>
+      <% if @pst_amount > 0 %>
         <tr>
-          <td>PST (<%= (@tax_rate.pst * 100).round(2) %>%):</td>
+          <td>PST (<%= @pst_rate %>%):</td>
           <td class="price">$<%= sprintf("%.2f", @pst_amount) %></td>
         </tr>
       <% end %>
-      <% if @tax_rate.hst > 0 %>
+      <% if @hst_amount > 0 %>
         <tr>
-          <td>HST (<%= (@tax_rate.hst * 100).round(2) %>%):</td>
+          <td>HST (<%= @hst_rate %>%):</td>
           <td class="price">$<%= sprintf("%.2f", @hst_amount) %></td>
         </tr>
       <% end %>
       <tr class="total">
         <td>Total:</td>
-        <td class="price">$<%= sprintf("%.2f", @total_amount) %></td>
+        <td class="price">$<%= sprintf("%.2f", @total) %></td>
       </tr>
     </table>
   </div>
 
-  <%= form_with(url: checkout_payment_path, class: "payment-form") do |f| %>
+  <%= form_with(url: checkout_payment_path, method: :post, id: "payment-form", class: "payment-form") do |f| %>
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <%= hidden_field_tag :payment_method_id, nil, id: "payment-method-id" %>
+
     <p class="demo-notice">This is a demo store. No actual payment will be processed.</p>
+
+    <div class="form-group">
+      <%= f.label :payment_method, "Payment Method" %>
+      <%= f.select :payment_method,
+                  [["Credit Card", "credit_card"],
+                   ["PayPal", "paypal"],
+                   ["Cash on Delivery", "cod"],
+                   ["Stripe", "stripe"]],
+                  { prompt: "Select Payment Method" },
+                  class: "form-control",
+                  id: "payment-method-select" %>
+    </div>
+
+    <div id="stripe-card-section" style="display: none;">
+      <div class="form-group">
+        <label for="card-element">Stripe Payment</label>
+        <div id="card-element"></div>
+        <div id="card-errors" class="text-danger" role="alert"></div>
+      </div>
+    </div>
 
     <div class="form-actions">
       <%= link_to "Back to Address", checkout_address_path, class: "back-btn" %>
@@ -48,3 +71,43 @@
     </div>
   <% end %>
 </div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const stripe = Stripe("<%= Rails.application.credentials.dig(:stripe, :publishable_key) %>");
+    const elements = stripe.elements();
+    const card = elements.create('card');
+    card.mount('#card-element');
+
+    const paymentSelect = document.getElementById('payment-method-select');
+    const stripeSection = document.getElementById('stripe-card-section');
+    const paymentForm = document.getElementById('payment-form');
+
+    paymentSelect.addEventListener('change', () => {
+      if (paymentSelect.value === 'stripe') {
+        stripeSection.style.display = 'block';
+      } else {
+        stripeSection.style.display = 'none';
+      }
+    });
+
+    paymentForm.addEventListener('submit', async (e) => {
+      if (paymentSelect.value === 'stripe') {
+        e.preventDefault();
+
+        const { paymentMethod, error } = await stripe.createPaymentMethod({
+          type: 'card',
+          card: card
+        });
+
+        if (error) {
+          document.getElementById('card-errors').textContent = error.message;
+        } else {
+          document.getElementById('payment-method-id').value = paymentMethod.id;
+          paymentForm.submit();
+        }
+      }
+    });
+  });
+</script>

@@ -6,6 +6,22 @@
   </div>
 
   <div class="dashboard-section">
+    <h2>Address Information</h2>
+    <% if current_user.address.present? %>
+      <div class="address-details">
+        <p><strong>Street:</strong> <%= current_user.address.street %></p>
+        <p><strong>City:</strong> <%= current_user.address.city %></p>
+        <p><strong>Postal Code:</strong> <%= current_user.address.postal_code %></p>
+        <p><strong>Province:</strong> <%= current_user.address.province.name %></p>
+      </div>
+      <%= link_to 'Edit Address', edit_address_path, class: "edit-address-btn" %>
+    <% else %>
+      <p class="no-address">You haven't added an address yet.</p>
+      <%= link_to 'Add Address', edit_address_path, class: "add-address-btn" %>
+    <% end %>
+  </div>
+
+  <div class="dashboard-section">
     <h2>Recent Orders</h2>
 
     <% if @recent_orders.any? %>
