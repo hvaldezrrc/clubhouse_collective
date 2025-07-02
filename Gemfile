@@ -72,7 +72,7 @@ gem "image_processing", "~> 1.2"
 
 gem "mini_magick", "~> 5.2"
 
-gem "faker", "~> 3.2"
+gem "faker", "~> 3.5"
 
 gem "nokogiri", "~> 1.18"
 
